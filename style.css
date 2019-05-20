@@ -1,0 +1,50 @@
+#desktop-only {display: block;}
+#mobile-only {display: none;}
+
+@media screen and (max-width: 991px) {
+#desktop-only {display: none;}
+#mobile-only {display: block;}
+}
+
+
+
+.up{
+display: block;
+width:36%;
+font-size: 60px;
+margin-top:5%;
+margin-right:32%;
+margin-left:32%;
+}
+.left{
+display:inline-block;
+float:left;
+width:27%;
+font-size:60px;
+margin:15px;;
+}
+.right{
+display:inline-block;
+float:right;
+width:27%;
+font-size:60px;
+margin:15px;
+}
+
+.down{
+display: inline-block;
+float;
+width:27%;
+font-size: 60px;
+margin: 15px 30% 5% 36%;
+}
+.reset{
+  border-radius: 15%;
+}
+.debug{
+  border-radius: 15%;
+}
+h1 {
+  font-size: 14px;
+  display: inline-block;
+}
