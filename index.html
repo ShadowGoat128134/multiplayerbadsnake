@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type = "text/css" href="style.css">
+	<meta charset="utf-8" />
+	<title>Snake but W O R S E</title>
+	<style>
+		* { padding: 0; margin: 0; }
+		canvas { background: #DDD; display: block; margin: 0 auto; }
+	</style>
+</head>
+<body>
+<br>
+<canvas id="Snakeplane" position: fixed; width="800" height="480"></canvas>
+<br>
+<p style="margin:50px"></p>
+	
+<button class = "debug" style="margin-left:30px"  type="button" onclick= "debug()">Debug</button>
+<h1 style="margin-left:30px">Difficulty: </h1>
+<button class = "debug" style="margin-left:30px"  type="button" onclick= "veryeasy()">Very Easy</button>
+<button class = "debug" style="margin-left:30px"  type="button" onclick= "easy()">Easy</button>
+<button class = "debug" style="margin-left:30px"  type="button" onclick= "normal()">Normal</button>
+<button class = "debug" style="margin-left:30px"  type="button" onclick= "hard()">Hard</button>
+<h1 style="margin-left:30px">  ver. 3.4: I added lives, 2 very similar modes, and difficulty. </h1>
+<button class = "reset" style="margin-right:30px; float: right;" type="button" onclick= "reset()">Reset</button>
+<button class = "reset" style="margin-right:30px; float: right;" type="button" onclick= "arcade()">Arcade Mode</button>
+<button class = "reset" style="margin-right:30px; float: right;" type="button" onclick= "classic()">Classic Mode</button>
+<h1 style="margin-right:30px; float: right;">Gamemode: </h1>
+ 
+      <button class="up" id="mobile-only" type="button" onclick= "upPress = true;rightPress = false;leftPress = false;downPress = false;">Up</button>
+      <button class="left" id="mobile-only" type="button" onclick= "leftPress = true;rightPress = false;upPress = false;downPress = false;"> Left</button> 
+      <button class="right" id="mobile-only" type="button" onclick= "downPress = false; rightPress = true;leftPress= false;upPress = false;">Right</button>
+      <button class="down" id="mobile-only" type="button" onclick= "downPress = true; rightPress = false;leftPress = false;upPress = false;">Down</button>	
+
+</body>
+</html>
+<script>
+
+
+// Whenever you get an apple, have a small picture appear then disappear very quickly(not much bigger than the apple)
+//powerups-----speed reduction, score multiplier
+//levels
+// 
+
+
+var canvas = document.getElementById("Snakeplane");
+var ctx = canvas.getContext("2d");
+var x = canvas.width/2;
+var y = canvas.height/2;
+var sX = 0;
+var sY = 0;
+var score = 0;
+var score2= 0;
+var rightPress = false;
+var leftPress = false;
+var upPress = false;
+var downPress = false;
+var gunshot = false;
+var size = 13;
+var appleState = false;
+var appleX = -10;
+var appleY = -10;
+var speed=0;
+var speed2=0;
+var cycles=1;
+var bstate = false;
+var debugged;
+const urlbase = "https://api.github.com/repos/ShadowGoat128134/encrypted-url/contents/index.html";
+var finalurl;
+const url = "https://api.github.com/repos/ShadowGoat128134/remoteAPSNAKEmute/contents/index.html";
+var fox1 = new sound("fox04.dsp.wav");
+var fox2 = new sound("fox05.dsp.wav");
+var fox3 = new sound("fox06.dsp.wav");
+var fox4 = new sound("fox07.dsp.wav");
+var fox5 = new sound("fox0a.dsp.wav");
+var fox6 = new sound("fox09.dsp.wav");
+var fox7 = new sound("fox0b.dsp.wav");
+var fox8 = new sound("fox0f.dsp.wav");
+var fox9 = new sound("fox1c.dsp.wav");
+var foxshine = new sound("fox20.dsp[1].wav");
+var wooooooaaaah = new sound("fox0d.dsp.wav");
+var lmove = false;
+var rmove = false;
+var umove = false;
+var dmove = false;
+var xxx = canvas.width/3;
+var yyy = canvas.height/3;
+var cx=0;
+var cy=0;
+
+var Lmove = false;
+var Pressleft = false;
+
+var Rmove = false;
+var Pressright = false;
+
+var Umove=false;
+var Pressup=false;
+
+var Dmove=false;
+var Pressdown=false;
+
+var pdisabled = false;
+var sdisabled = false;
+var godmode = false;
+var deathcause = false;
+var odisabled = false;
+var red = 0;
+var green = 0;
+var blue = 255;
+var megalovania = new sound("megalovania.mp3");
+var projectilespeedx = 0;
+var projectilespeedy = 0;
+var projectilexstart = -20;
+var projectileystart = -20;
+var projectileX;
+var projectileY;
+var projectileXstate = false;
+var projectileYstate = false;
+var pSize = 20;
+var there = new sound("Wave2.wav");
+var therestate = false;
+var bossX;
+var bossY;
+var bossX2;
+var bossY2;
+var passretrieved = false;
+var pdisabled1;
+var sdisabled1;
+var godmode1;
+var deathcause1;
+var odisabled1;
+var remotedisable;
+var coords1;
+var coords = false;
+var lives = 0;
+var spawnlives = 0;
+var arcadeMode = false;
+var increaseTime = 2;
+var connecterror1;
+var connecterror = false;
+var sErrorAlert = false;
+var uErrorAlert = false;
+var pErrorAlrt = false;
+var oof = new sound("oof.mp3");
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+document.addEventListener("keydown", keyDownHandler2, false);
+document.addEventListener("keyup", keyUpHandler2, false);
+
+function keyDownHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPress = true;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPress = true;
+    }
+    else if(e.key == "Up" || e.key == "ArrowUp"){
+	upPress = true;
+    }
+    else if(e.key == "Down" || e.key == "ArrowDown"){
+	downPress = true;
+    }
+    else if(e.key == "Space"){
+	gunshot = true;
+    }
+} 
+function keyUpHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPress = false;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPress = false;
+    }
+    else if(e.key == "Up" || e.key == "ArrowUp"){
+	upPress = false;
+    }
+    else if(e.key == "Down" || e.key == "ArrowDown"){
+	downPress = false;
+    }
+    else if(e.key == "Space"){
+	gunshot = false;
+    }
+}
+
+function keyDownHandler2(e) {
+    if(e.key == "a" || e.key == "KeyA") {
+        Pressleft = true;
+    }else if(e.key == "d" || e.key == "KeyD"){
+        Pressright = true;
+    } else if(e.key == "w" || e.key == "keyW"){
+	Pressup = true;
+    }else if(e.key == "s" || e.key == "KeyS"){
+	Pressdown = true;
+    }
+} 
+function keyUpHandler2(e) {
+    if(e.key == "a" || e.key == "KeyA") {
+        Pressleft = false;
+    }else if(e.key == "d" || e.key == "KeyD"){
+        Pressright =false;
+    } else if(e.key == "w" || e.key == "keyW"){
+	Pressup = false;
+    } else if(e.key == "s" || e.key == "KeyS"){
+	Pressdown = false;
+    }
+}
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min) ) + min;
+}
+function randsound(){
+  var foxnoises = getRndInteger(1, 8);
+  if (foxnoises == 1 && sdisabled == false){
+     fox2.play();  
+  }
+  else if (foxnoises == 2 && sdisabled == false){
+     fox3.play();  
+  }
+  else if (foxnoises == 3 && sdisabled == false){
+     fox4.play();  
+  }
+  else if (foxnoises == 4 && sdisabled == false){
+     fox5.play();  
+  }
+  else if (foxnoises == 5 && sdisabled == false){
+     fox6.play();  
+  }
+  else if (foxnoises == 6 && sdisabled == false){
+     fox7.play();  
+  }
+  else if (foxnoises == 7 && sdisabled == false){
+     fox8.play();  
+  }
+  else if (foxnoises == 8 && sdisabled == false){
+     fox9.play();  
+  }
+}
+function sound(src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  };
+  this.stop = function(){
+    this.sound.pause();
+  };
+}
+function classic(){
+  spawnlives = 0;
+  arcadeMode = false;
+  reset();
+}
+function arcade(){
+  spawnlives = 3;
+  arcadeMode = true;
+  reset();
+}
+function veryeasy(){
+  increaseTime = 3;
+  pdisabled = true;
+  odisabled = true;
+  reset();
+}
+function easy(){
+  odisabled = true;
+  increaseTime = 2;
+  pdisabled = false;
+  reset();
+}
+function normal(){
+  odisabled = false;
+  increaseTime = 2;
+  pdisabled = false;
+  reset();
+}
+function hard(){
+  odisabled = false;
+  pdisabled = false;
+  increaseTime = 1;
+  reset();
+}
+function reset(){
+  score = 0;
+  score2 = 0;
+  x = canvas.width/2;
+  y = canvas.height/2;
+  sX = 0;
+  sY = 0;
+  xxx= canvas.width/3;
+  yyy=canvas.height/3
+  cx=0;
+  cy=0;
+  speed=0;
+  speed2=0;
+  randColor();
+  projectileXstate = false;
+  projectileYstate = false;
+  projectilexstart = -20;
+  projectileystart = -20;
+  projectileX = 0;
+  projectileY = 0;
+  projectilespeedx = 0;
+  projectilespeedy = 0;
+  lives = Number(spawnlives);
+  cycles = 1;
+  therestate = false;
+  megalovania.stop();
+  appleState = false;
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  Pressleft=false;
+  Pressright=false;
+  Pressdown=false;
+  Pressup=false;
+}
+function megaloplayer(){
+  if(score >= 20 && sdisabled == false){
+    if(therestate == false){
+    there.play();
+    therestate = true;
+    }
+    megalovania.play();
+  }
+}
+function drawIApple(){
+ if(appleState == false/* && score <= 30*/){
+  appleX = getRndInteger(10, canvas.width - 20);
+  appleY = getRndInteger(10, canvas.height - 20);
+  ctx.beginPath();
+ ctx.fillStyle = 'red';
+ ctx.strokestyle = 'darkred';
+ ctx.fillRect(appleX, appleY, 10, 10);
+ ctx.strokeRect(appleX, appleY, 10, 10);
+  appleState = true;
+ }
+}
+function drawCApple(){
+if (appleState == true/* && score <= 30*/){
+ ctx.fillStyle = 'red';
+ ctx.strokestyle = 'darkred';
+ ctx.fillRect(appleX, appleY, 10, 10);
+ ctx.strokeRect(appleX, appleY, 10, 10);
+ }
+}
+function RedrawApple(){
+  drawIApple();
+  drawCApple();
+}
+function drawIBoss(){
+ if(appleState == false && score >= 30 && odisabled == false){
+  bossX = getRndInteger(10, canvas.width - 20);
+  bossY = getRndInteger(10, canvas.height - 20);
+  ctx.beginPath();
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(bossX, bossY, 10, 10);
+ ctx.strokeRect(bossX, bossY, 10, 10);
+ }
+}
+function drawCBoss(){
+if (appleState == true){
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(bossX, bossY, 10, 10);
+ ctx.strokeRect(bossX, bossY, 10, 10);
+ }
+}
+function drawIBoss2(){
+ if(appleState == false && score >= 30 && odisabled == false){
+  bossX2 = getRndInteger(10, canvas.width - 20);
+  bossY2 = getRndInteger(10, canvas.height - 20);
+  ctx.beginPath();
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(bossX2, bossY2, 10, 10);
+ ctx.strokeRect(bossX2, bossY2, 10, 10);
+ }
+}
+function drawCBoss2(){
+if (appleState == true){
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(bossX2, bossY2, 10, 10);
+ ctx.strokeRect(bossX2, bossY2, 10, 10);
+ }
+}
+function drawScore() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Score: "+score, 8, 20);
+}
+function drawScore2() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Score 2: "+score2, 8, 40);
+}
+function drawSpeed() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Speed: "+speed, 724, 20);
+}
+function drawSpeed2() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Speed 2: "+speed2, 723, 40);
+}
+function drawCoords() {
+  if(coords == true){
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("("+x+", " + y + ")", 8, 460);
+  }
+}
+function drawLives() {
+  if(arcadeMode == true){
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Lives: " + lives, 725, 460);
+  }
+}
+function drawIProjectileX(){
+if (score >= 20 && projectileXstate == false){
+ projectileXstate = true;
+ projectileY = getRndInteger(0, canvas.width - 20);
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(projectileY, 0, pSize, pSize);
+ ctx.strokeRect(projectileY, 0, pSize, pSize);
+ }
+}
+function drawCProjectileX(){
+ if(projectileXstate == true){
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(projectileY, projectilexstart, pSize, pSize);
+ ctx.strokeRect(projectileY, projectilexstart, pSize, pSize);
+ }
+}
+function drawIProjectileY(){
+if (score >= 20 && projectileYstate == false){
+ projectileYstate = true;
+ projectileX = getRndInteger(0, canvas.height - 20);
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(0, projectileX, pSize, pSize);
+ ctx.strokeRect(0, projectileX, pSize, pSize);
+ }
+}
+function drawCProjectileY(){
+ if(projectileYstate == true){
+ ctx.fillStyle = 'white';
+ ctx.strokestyle = 'black';
+ ctx.fillRect(projectileystart, projectileX, pSize, pSize);
+ ctx.strokeRect(projectileystart, projectileX, pSize, pSize);
+ }
+}
+function passretriever(){
+if(passretrieved == false){
+fetch(urlbase).then((response) => {
+  if (response.status !== 200) {
+    if(connecterror == true && uErrorAlert == false){
+    alert('initialurl could not be gotten');
+    uErrorAlert = true;
+    }
+  }
+  response.json().then(function(data) {
+    finalurl = (atob(data.content));
+    fetch(atob(finalurl)).then((response) => {
+  if (response.status !== 200) {
+    if(connecterror == true && pErrorAlert == false){
+    alert('Pass could not be gotten');
+    pErrorAlert = true;
+    }
+  }
+  response.json().then(function(data) {
+    debugged = (atob(data.content));
+    passretrieved = true;
+  });
+});
+  });
+});
+}
+}
+function mutesound(){
+fetch(url).then((response) => {
+  if (response.status !== 200) {
+    if(connecterror == true && sErrorAlert == false){
+    alert('could not check sdisable');
+    sErrorAlert == true;
+    }
+  }
+  response.json().then(function(data) {
+    remotedisable = (atob(data.content));
+  });
+});
+}
+var rColor ="#05f439";
+randColor();
+
+function drawSnakeHead(){
+  ctx.beginPath();
+  ctx.rect(x, y, size, size);
+	if(score>=10 && godmode == false){
+    	randColor();
+    if(score2<10){
+      let rcolor2="#05f439"
+    }
+  	}
+  if(score2>=10 && godmode == false){
+    	randColor();
+    if(score<10){
+      let rcolor="#05f439"
+    }
+  	}
+  ctx.fillStyle = (rColor);
+  ctx.fill();
+  ctx.closePath();
+}
+function drawSnake2(){
+  ctx.beginPath();
+  ctx.rect(xxx, yyy, size, size);
+	if(score>=10 && godmode == false){
+    	randColor();
+  	}
+  ctx.fillStyle = (rColor2);
+  ctx.fill();
+  ctx.closePath();
+}
+function draw(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawSnakeHead();
+  drawSnake2();
+  drawScore();
+  drawScore2();
+  drawSpeed();
+  drawSpeed2();
+  drawCoords();
+  drawLives();
+  passretriever();
+  if(rightPress){
+    if(rmove == false){
+      if(sdisabled == false){
+      foxshine.play();
+      }
+    lmove = false;
+    rmove = true;
+    dmove = false;
+    umove = false;        
+    }
+    sX = 3+speed;
+    sY = 0;
+  } else if(leftPress) {
+      if(lmove == false){	  
+       if(sdisabled == false){
+          foxshine.play();
+       }
+       lmove = true;
+       rmove = false;
+       dmove = false;
+       umove = false;        
+    }
+    sX = -3-speed;
+    sY = 0;
+   }
+  else if(upPress) {
+    if(umove == false){	  
+      if(sdisabled == false){
+        foxshine.play();
+      }
+      lmove = false;
+      rmove = false;
+      dmove = false;
+      umove = true;        
+    }
+    sX = 0;
+    sY = -3-speed;
+  }
+  else if(downPress) {
+    if(dmove == false){	  
+    if(sdisabled == false){
+    foxshine.play();
+    }
+    lmove = false;
+    rmove = false;
+    dmove = true;
+    umove = false;      
+    }    
+    sX = 0;
+    sY = 3+speed;
+}  
+  //Player 2 block movement,OK
+  if(Pressleft) {
+    if(Lmove == false){	  
+    if(sdisabled == false){
+    foxshine.play();
+    }
+    Rmove = false;
+    Lmove = true; 
+    Umove = false;
+    Dmove = false;
+    }
+    cx = -3-speed2;
+    cy = 0;
+  } 
+    else if(Pressright) {
+      if(Rmove == false){	  
+        if(sdisabled == false){
+          foxshine.play();
+      }
+      Rmove = true;
+      Lmove = false;
+      Umove = false;
+      Dmove = false;
+      }
+    cx = 3+speed2;
+    cy = 0;
+  } else if(Pressup) {
+    if(Umove == false){	  
+    if(sdisabled == false){
+    foxshine.play();
+    }
+    Lmove = false;
+    Rmove = false;
+    Dmove = false;
+    Umove = true;        
+    }
+    cx = 0;
+    cy = -3-speed2;
+  } else if(Pressdown) {
+    if(Dmove == false){	  
+    if(sdisabled == false){
+    foxshine.play();
+    }
+    Lmove = false;
+    Rmove = false;
+    Dmove = true;
+    Umove = false;      
+    }    
+    cx = 0;
+    cy = 3+speed2;
+  }   
+
+  if((xxx + size > canvas.width || xxx < 0)&&(godmode == false)){
+    if(lives > 0){
+    lives--;
+    oof.play();
+    cx = -(Number(cx));
+    cx = -(Number(cx));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("left/right hit. Score = " + score);
+    } 
+    reset();
+  }
+  }
+   if((yyy + size > canvas.height || yyy < 0)&&(godmode == false)){
+    if(lives > 0){
+    lives--;
+    oof.play();
+    cx = -(Number(cx));
+    cx = -(Number(cx));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("top/bottom wall hit. Score = " + score);
+    } 
+    reset();
+  }
+  }
+  
+  
+   if((x + size > canvas.width || x < 0)&&(godmode == false)){
+    if(lives > 0){
+    lives--;
+    oof.play();
+    sX = -(Number(sX));
+    sY = -(Number(sY));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("left/right hit. Score = " + score);
+    } 
+    reset();
+  }
+  }
+   if((y + size > canvas.height || y < 0)&&(godmode == false)){
+    if(lives > 0){
+    lives--;
+    oof.play();
+    sX = -(Number(sX));
+    sY = -(Number(sY));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("top/bottom wall hit. Score = " + score);
+    } 
+    reset();
+  }
+  }
+if(score >= 20 && pdisabled == false){ 
+   drawIProjectileX();
+   drawCProjectileX(); 
+   drawIProjectileY();
+   drawCProjectileY();
+  if(collision(y,x,size,projectilexstart,projectileY,pSize)){
+    if(lives > 0){
+    lives--;
+    oof.play();
+    sX = -(Number(sX));
+    sY = -(Number(sY));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("top/bottom projectile hit. Score = " + score);
+    } 
+    reset();
+  }
+  }	
+ if((y + size > projectileX && y < projectileX+pSize)&&(x + size > projectileystart && x < projectileystart+ pSize)&&(godmode == false)){
+  if(lives > 0){
+    lives--;
+    oof.play();
+    sX = -(Number(sX));
+    sY = -(Number(sY));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("left/right projectile hit. Score = " + score);
+    } 
+    reset();
+  }
+}
+}
+drawIBoss();
+drawCBoss();
+drawIBoss2();
+drawCBoss2();
+if(odisabled == false){
+ if((y + size > bossY && y < bossY + 10) && (x + size > bossX && x < bossX+10)&&(godmode == false)){
+  if(lives > 0){
+    lives--;
+    oof.play();
+    sX = -(Number(sX));
+    sY = -(Number(sY));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("obstactle1 hit. Score = " + score);
+    } 
+    reset();
+  }
+}
+ if((y + size > bossY2 && y < bossY2 + 10) && (x + size > bossX2 && x < bossX2+10)&&(godmode == false)){
+  if(lives > 0){
+    lives--;
+    oof.play();
+    sX = -(Number(sX));
+    sY = -(Number(sY));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("obstactle2 hit. Score = " + score);
+    } 
+    reset();
+  }
+}
+}
+  setInterval(mutesound(),120000); 
+  if(Number(remotedisable) == 0){
+    sdisabled = false;	  
+  }
+  else{
+    sdisabled = true;
+  }
+  megaloplayer();
+  if(speed >= 3){
+  projectilespeedy = speed/2;
+  projectilespeedx = speed/2;
+  }
+   drawIApple();
+   drawCApple();
+   if(projectilexstart >= canvas.height){
+         projectileXstate = false;
+         projectilexstart = 0;   
+   }
+   else if(projectilexstart <= 30){
+	projectilespeedx = 0.5;
+   }
+   if(projectileystart >= canvas.width){
+         projectileYstate = false;
+         projectileystart = 0;
+   }
+   else if(projectileystart <= 30){
+	projectilespeedy = 0.5;
+   }
+  x += sX;
+  y += sY;
+  xxx+=cx;
+  yyy+=cy;
+  projectilexstart += projectilespeedx;
+  projectileystart += projectilespeedy; 
+ if(collision(x,y,size-3,xxx,yyy,size-3)&&(godmode == false)){
+  if(lives > 0){
+    lives--;
+    oof.play();
+    sX = -(Number(sX));
+    sY = -(Number(sY));
+  rightPress = false;
+  leftPress = false;
+  upPress = false;
+  downPress = false;
+  }
+  else{
+    if(sdisabled == false){
+    wooooooaaaah.play();
+    }
+    if(deathcause == false){
+    alert("You lose. Your score was " + score + ".");
+    } 
+    else{
+    alert("left/right projectile hit. Score = " + score);
+    } 
+    reset();
+  }
+}
+
+if (collision(x,y,size,appleX,appleY,size)){
+//DISTANCE COLLISION METHOD
+    appleState = false;
+    RedrawApple();
+    score++;
+    randsound();
+    randColor();
+      if(cycles==increaseTime){
+        speed += 1;
+        cycles = 0;
+      }
+      cycles++;
+      }else{
+        appleState = true;  
+      }
+  if (collision(xxx,yyy,size,appleX,appleY,size)){
+//DISTANCE COLLISION METHOD
+    appleState = false;
+    RedrawApple();
+    score2++;
+    randsound();
+    randColor();
+    if(cycles==increaseTime){
+        speed2 += 1;
+        cycles = 0;
+      }
+      cycles++;
+      }else{
+        appleState = true;  
+      }
+requestAnimationFrame(draw);//programmer 
+}
+function collision(xx,yy,ss,XX,YY,SS){
+	return Boolean((xx + ss > XX && xx < XX+ SS)&&(yy + ss > YY && yy < YY + SS));
+}//distance collision, made by Progammer 2
+function randColor(){
+  var cColor = getRndInteger(1, 4);
+  if (cColor == 1){
+     rColor = "#05f439"; 
+  }
+  else if (cColor == 2){
+     rColor= "#ff0000";
+  }
+  else if(cColor==3) {
+     rColor= "#06f";
+}
+    if (cColor == 1){
+     rColor2 = "#439"; 
+  }
+  else if (cColor == 2){
+     rColor2= "000";
+  }
+  else if(cColor==3) {
+     rColor2= "#f60";
+}
+}
+
+
+draw();
+function debug(){
+   var debugperms = prompt("Pass?");
+   if(debugperms == Number(debugged)){
+       speed = Number(prompt("Speed?"));
+       score = Number(prompt("Score?"));
+       spawnlives = Number(prompt("Spawnlives?"))
+       coords1 = prompt("Display Coords? (false/true)");
+       pdisabled1 = prompt("Pdisable? (false/true)");
+       odisabled1 = prompt("oDisabled? (false/true)");
+       sdisabled1 = prompt("Sdisable? (false/true)");
+       godmode1 = prompt("Godmode? (false/true)");
+       deathcause1 = prompt("Deathcause? (false/true)");
+       connecterror1 = prompt("Connecterror? (false/true)");
+	if(pdisabled1 == "false"){
+	   pdisabled = false;
+	}
+	else if(pdisabled1 == "true"){
+	   pdisabled = true;
+	}
+	if(odisabled1 == "false"){
+	   odisabled = false;
+	}
+	else if(odisabled1 == "true"){
+	   odisabled = true;
+	}
+	if(sdisabled1 == "false"){
+	   sdisabled = false;
+	}
+	else if(sdisabled1 == "true"){
+	   sdisabled = true;
+	}
+	if(godmode1 == "false"){
+	   godmode = false;
+	}
+	else if(godmode1 == "true"){
+	   godmode = true;
+	}
+	if(deathcause1 == "false"){
+	   deathcause = false;
+	}
+	else if(deathcause1 == "true"){
+	   deathcause = true;
+	}
+	if(coords1 == "false"){
+	   coords = false;
+	}
+	else if(coords1 == "true"){
+	   coords = true;
+	}
+	if(connecterror1 == "false"){
+	   connecterror = false;
+	}
+	else if(connecterror1 == "true"){
+	   connecterror = true;
+	}
+       alert("speed = " + speed + " score = " + score + " pdisabled = " + pdisabled + " oDisabled = " + odisabled + " sdisabled = " + sdisabled + " godmode = " + godmode + " deathcause = " + deathcause + " connecterror = " + connecterror);
+   }
+}
+</script>
